@@ -1,0 +1,21 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+# Archivos del espacio de trabajo del usuario (archivos abiertos, historial, etc.)
+workspace.xml
+
+# Cachés y datos temporales del IDE
+# (Android Studio/IntelliJ pueden tener varios, estos son los más comunes)
+shelf/
+# Si usas la ventana de tareas para elementos personales
+tasks.xml
+# Estadísticas de uso del IDE
+usage.statistics.xml
+# Si usas el plugin SonarLint y tiene archivos locales
+sonarlint/
+# Formato antiguo de workspace, por si acaso
+*.(iws)
+
+# Otras configuraciones específicas del usuario que puedan aparecer
+# Por ejemplo, si un plugin específico crea archivos de caché o estado dentro de .idea

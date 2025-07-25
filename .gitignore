@@ -1,0 +1,60 @@
+#AUTO-GENERATED
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# Created by .ignore support plugin (Advertising) - com.hsz.idea.gitignore
+
+### Gradle ###
+.gradle/
+build/
+# Cubre los directorios build dentro de cada módulo (como app/build)
+*/build/
+
+### Android Studio ###
+# Archivos específicos del entorno local y temporales del IDE
+# No es necesario ignorar todo .idea/ aquí si quieres versionar partes de él.
+# Nos ocuparemos de los archivos específicos de .idea/ en su propio .gitignore.
+
+# Archivos de configuración local (¡MUY IMPORTANTE!)
+local.properties
+
+# Archivos de Keystore (¡NUNCA LOS COMMITEES SI SON PARA PRODUCCIÓN!)
+*.jks
+*.keystore
+
+# Android Profiler y otros archivos de diagnóstico
+*.hprof
+*.snapshot
+captures/
+*.log
+
+# Archivos de sistema operativo
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+
+# Resultados de Lint (opcional, algunos equipos los versionan)
+# lint-results-*.xml
+# lint-results-*.html
+
+# Archivos de configuración de servicios (ejemplo, si no deben ser públicos)
+# google-services.json # Considera si contiene secretos o es seguro versionarlo.
+# Si es sensible, usa placeholders o variables de entorno.
+
+# Archivos de variables de entorno (si usas un archivo .env)
+# .env
+
+# Archivos específicos de otros plugins o herramientas que puedas usar
+# /RealmSwiftDataMigration/ # Ejemplo si usas Realm
