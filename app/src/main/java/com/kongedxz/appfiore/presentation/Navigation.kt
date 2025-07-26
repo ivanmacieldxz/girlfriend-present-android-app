@@ -1,6 +1,12 @@
 package com.kongedxz.appfiore.presentation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -8,20 +14,23 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.kongedxz.appfiore.di.AppDependencyInjector.getGalleryMenuViewModel
+import com.kongedxz.appfiore.di.AppDependencyInjector.getGalleryViewModel
 import com.kongedxz.appfiore.presentation.gallery.photo.PhotoScreen
 import com.kongedxz.appfiore.presentation.gallery.GalleryScreen
 import com.kongedxz.appfiore.presentation.gallery.GalleryMenuScreen
 import com.kongedxz.appfiore.presentation.home.HomeScreen
 import com.kongedxz.appfiore.presentation.phrases.PhrasesScreen
 import com.kongedxz.appfiore.di.AppDependencyInjector.getHomeViewModel
+import com.kongedxz.appfiore.di.AppDependencyInjector.getPhotoViewModel
+import com.kongedxz.appfiore.di.AppDependencyInjector.getPhrasesViewModel
 
 object Routes {
     const val HOME = "home"
     const val PHRASES = "phrases"
     const val GALLERY = "gallery"
-    const val GALLERY_ENTRY = "entry"
     const val GALLERY_TITLE = "title"
-    val PHOTO_ID = "id"
+    const val PHOTO_ID = "id"
 }
 
 @Composable
@@ -39,53 +48,67 @@ fun Navigation() {
 
 private fun NavGraphBuilder.homeDestination(navController: NavHostController) {
     composable(Routes.HOME) {
-        HomeScreen(
-            getHomeViewModel(),
-            onPhrasesButtonClick = {
-                navController.navigate(Routes.PHRASES)
-            },
-            onGalleryMenuButtonClick = {
-                navController.navigate(Routes.GALLERY)
-            }
-        )
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            HomeScreen(
+                modifier = Modifier.padding(innerPadding),
+                getHomeViewModel(),
+                onPhrasesButtonClick = {
+                    navController.navigate(Routes.PHRASES)
+                },
+                onGalleryMenuButtonClick = {
+                    navController.navigate(Routes.GALLERY)
+                }
+            )
+        }
     }
 }
 
 private fun NavGraphBuilder.phrasesDestination(navController: NavHostController) {
     composable(Routes.PHRASES) {
-        PhrasesScreen(
-            onBack = {
-                navController.popBackStack()
-            }
-        )
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            PhrasesScreen(
+                modifier = Modifier.padding(innerPadding),
+                getPhrasesViewModel(),
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 private fun NavGraphBuilder.galleryMenuDestination(navController: NavHostController) {
     composable(
         route = Routes.GALLERY
     ) {
-        GalleryMenuScreen(
-            onBack = {
-                navController.popBackStack()
-            },
-            onGalleryButtonClick = {
-                gallery -> navController.navigate("${Routes.GALLERY}/${gallery.title}")
-            }
-        )
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            GalleryMenuScreen(
+                modifier = Modifier.padding(innerPadding),
+                getGalleryMenuViewModel(),
+                onBack = {
+                    navController.popBackStack()
+                },
+                onGalleryButtonClick = { gallery ->
+                    navController.navigate("${Routes.GALLERY}/${gallery.title}")
+                }
+            )
+        }
     }
 }
 
 private fun NavGraphBuilder.galleryDestination(navController: NavHostController) {
     composable(
-        route = "${Routes.GALLERY}/${Routes.GALLERY_TITLE}",
+        route = "${Routes.GALLERY}/{${Routes.GALLERY_TITLE}}",
         arguments = listOf(navArgument(Routes.GALLERY_TITLE) { type = NavType.StringType })
-    ) {
-        backstackEntry ->
-            val galleryTitle = backstackEntry.arguments?.getString(Routes.GALLERY_TITLE)
+    ) { backstackEntry ->
+        val galleryTitle = backstackEntry.arguments?.getString(Routes.GALLERY_TITLE)
 
-            galleryTitle?.let {
+        galleryTitle?.let {
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 GalleryScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    getGalleryViewModel(),
                     onBack = {
                         navController.popBackStack()
                     },
@@ -94,24 +117,27 @@ private fun NavGraphBuilder.galleryDestination(navController: NavHostController)
                     }
                 )
             }
+        }
     }
 }
 
 private fun NavGraphBuilder.photoDestination(navController: NavHostController) {
     composable(
-        route = "${Routes.GALLERY}/${Routes.GALLERY_TITLE}/${Routes.PHOTO_ID}",
+        route = "${Routes.GALLERY}/{${Routes.GALLERY_TITLE}}/{${Routes.PHOTO_ID}}",
         arguments = listOf(
             navArgument(Routes.GALLERY_TITLE) { type = NavType.StringType },
             navArgument(Routes.PHOTO_ID) { type = NavType.StringType }
         )
-    ) {
-        backstackEntry -> {
-            val galleryTitle = backstackEntry.arguments?.getString(Routes.GALLERY_TITLE)
-            val photoId = backstackEntry.arguments?.getString(Routes.PHOTO_ID)
+    ) { backstackEntry ->
+        val galleryTitle = backstackEntry.arguments?.getString(Routes.GALLERY_TITLE)
+        val photoId = backstackEntry.arguments?.getString(Routes.PHOTO_ID)
 
-            galleryTitle?.let {
-                photoId?.let {
+        galleryTitle?.let {
+            photoId?.let {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     PhotoScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        getPhotoViewModel(),
                         onBack = {
                             navController.popBackStack()
                         }
