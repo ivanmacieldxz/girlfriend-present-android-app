@@ -1,4 +1,4 @@
-package com.kongedxz.appfiore.domain
+package com.kongedxz.appfiore.domain.entity
 
 data class Photo (
     val id: String,
