@@ -33,6 +33,7 @@ object Routes {
     const val PHOTO_ID = "id"
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
@@ -113,8 +114,9 @@ private fun NavGraphBuilder.galleryDestination(navController: NavHostController)
                         navController.popBackStack()
                     },
                     onGalleryEntryButtonClick = { photo ->
-                        navController.navigate("${Routes.GALLERY}/$galleryTitle/${photo.id}")
-                    }
+                        navController.navigate("${Routes.GALLERY}/$galleryTitle/${photo.name}")
+                    },
+                    category = galleryTitle
                 )
             }
         }

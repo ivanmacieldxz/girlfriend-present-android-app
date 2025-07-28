@@ -1,7 +1,11 @@
 package com.kongedxz.appfiore.di
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.platform.LocalContext
+import com.kongedxz.appfiore.data.GalleryRepositoryImp
+import com.kongedxz.appfiore.data.local.photos.PhotoDataBasedPhotosLocalsource
+import com.kongedxz.appfiore.data.local.photos.PhotosLocalSource
+import com.kongedxz.appfiore.domain.repository.GalleryRepository
 import com.kongedxz.appfiore.presentation.gallery.photo.PhotoViewModel
 import com.kongedxz.appfiore.presentation.gallery.GalleryMenuViewModel
 import com.kongedxz.appfiore.presentation.gallery.GalleryViewModel
@@ -10,30 +14,32 @@ import com.kongedxz.appfiore.presentation.phrases.PhrasesViewModel
 
 object AppDependencyInjector {
 
+    private val photosLocalSource: PhotosLocalSource = PhotoDataBasedPhotosLocalsource()
+    private val galleryRepository: GalleryRepository = GalleryRepositoryImp(photosLocalSource)
+
+    private val homeViewModel = HomeViewModel()
+    private val phrasesViewModel = PhrasesViewModel()
+    private val galleryMenuViewModel = GalleryMenuViewModel()
+    private val galleryViewModel = GalleryViewModel(galleryRepository)
+    private val photoViewModel = PhotoViewModel()
 
     @Composable
-    fun getHomeViewModel(): HomeViewModel {
-        return viewModel { HomeViewModel() }
-    }
+    fun getHomeViewModel(): HomeViewModel = homeViewModel
 
     @Composable
-    fun getPhrasesViewModel(): PhrasesViewModel {
-        return viewModel { PhrasesViewModel() }
-    }
+    fun getPhrasesViewModel(): PhrasesViewModel = phrasesViewModel
 
     @Composable
-    fun getGalleryMenuViewModel(): GalleryMenuViewModel {
-        return viewModel { GalleryMenuViewModel() }
-    }
+    fun getGalleryMenuViewModel(): GalleryMenuViewModel = galleryMenuViewModel
 
     @Composable
-    fun getGalleryViewModel(): GalleryViewModel {
-        return viewModel { GalleryViewModel() }
-    }
+    fun getGalleryViewModel(): GalleryViewModel = galleryViewModel
 
     @Composable
     fun getPhotoViewModel(): PhotoViewModel {
-        return viewModel { PhotoViewModel() }
+        photosLocalSource.setContext(LocalContext.current)
+
+        return photoViewModel
     }
 
 }

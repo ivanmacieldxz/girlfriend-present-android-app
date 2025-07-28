@@ -2,11 +2,15 @@ package com.kongedxz.appfiore.presentation.utils
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -40,4 +44,16 @@ fun IdleCatGif(modifier: Modifier = Modifier) {
         modifier = modifier
             .aspectRatio((42 / 28f) * 1.5f)
     )
+}
+
+@Composable
+fun LoadingIndicator(enabled: Boolean, modifier: Modifier = Modifier) {
+    if (enabled) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }
 }
