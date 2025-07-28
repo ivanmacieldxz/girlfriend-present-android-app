@@ -12,12 +12,15 @@ class GalleryViewModel(
     private val repository: GalleryRepository,
 ): ViewModel() {
 
-    private val photosStateMutableStateFlow = MutableStateFlow(PhotosUiState(isLoading = true))
+    private val photosStateMutableStateFlow = MutableStateFlow(PhotosUiState())
 
     val photosStateFlow: Flow<PhotosUiState> = photosStateMutableStateFlow
 
     fun getAllPhotos(category: String) {
         viewModelScope.launch {
+            photosStateMutableStateFlow.emit(
+                PhotosUiState(isLoading = true)
+            )
             photosStateMutableStateFlow.emit(
                 PhotosUiState(
                     photos = repository.getPhotos(category),

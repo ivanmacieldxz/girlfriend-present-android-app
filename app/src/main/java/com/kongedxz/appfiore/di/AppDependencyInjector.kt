@@ -33,13 +33,13 @@ object AppDependencyInjector {
     fun getGalleryMenuViewModel(): GalleryMenuViewModel = galleryMenuViewModel
 
     @Composable
-    fun getGalleryViewModel(): GalleryViewModel = galleryViewModel
-
-    @Composable
-    fun getPhotoViewModel(): PhotoViewModel {
+    fun getGalleryViewModel(): GalleryViewModel {
         photosLocalSource.setContext(LocalContext.current)
 
-        return photoViewModel
+        return galleryViewModel
     }
+
+    @Composable
+    fun getPhotoViewModel(): PhotoViewModel = photoViewModel
 
 }

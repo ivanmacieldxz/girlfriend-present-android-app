@@ -27,6 +27,9 @@ import com.kongedxz.appfiore.data.local.photos.PhotoData
 import com.kongedxz.appfiore.domain.entity.DescribedPhoto
 import com.kongedxz.appfiore.presentation.utils.LoadingIndicator
 
+//TODO: move cache to repository, so cache's logic isn't handled on the view
+val cache = mutableMapOf<String, List<PhotoData>>()
+
 @Composable
 fun GalleryScreen(
     modifier: Modifier = Modifier,
@@ -35,17 +38,24 @@ fun GalleryScreen(
     onGalleryEntryButtonClick: (PhotoData) -> Unit,
     category: String
 ) {
-    LaunchedEffect(Unit) {
-        galleryViewModel.getAllPhotos(category)
-    }
+    if (cache[category].isNullOrEmpty()) {
+        LaunchedEffect(Unit) {
+            galleryViewModel.getAllPhotos(category)
+        }
 
-    val state by galleryViewModel.photosStateFlow.collectAsState(GalleryViewModel.PhotosUiState())
+        val state by galleryViewModel.photosStateFlow.collectAsState(initial = GalleryViewModel.PhotosUiState())
 
-    LoadingIndicator(state.isLoading)
+        LoadingIndicator(state.isLoading)
 
-    when {
-        state.photos.isNotEmpty() -> PhotoGrid(state.photos, onGalleryEntryButtonClick)
-        state.isLoading.not() -> GalleryErrorScreen("No photos")
+        when {
+            state.photos.isNotEmpty() -> {
+                PhotoGrid(state.photos, onGalleryEntryButtonClick)
+                cache[category] = state.photos
+            }
+            state.isLoading.not() -> GalleryErrorScreen("No photos")
+        }
+    } else {
+        PhotoGrid(cache[category].orEmpty(), onGalleryEntryButtonClick)
     }
 
 }

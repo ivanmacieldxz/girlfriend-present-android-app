@@ -56,7 +56,11 @@ fun GalleryMenuScreen(
             items(galleries.size) { index ->
                 Column (
                     modifier = Modifier
-                        .clickable { onGalleryButtonClick(Gallery(galleries[index])) }
+                        .clickable {
+                            onGalleryButtonClick(
+                                Gallery(getCuratedGalleryName(galleries[index]))
+                            )
+                        }
                         .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -92,4 +96,8 @@ private fun DirectoryImage(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
     )
+}
+
+private fun getCuratedGalleryName(galleryName: String): String {
+    return galleryName.substringBefore(' ').lowercase()
 }
