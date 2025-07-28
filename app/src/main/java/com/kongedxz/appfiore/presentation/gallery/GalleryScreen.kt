@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,11 +23,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kongedxz.appfiore.data.local.photos.PhotoData
-import com.kongedxz.appfiore.domain.entity.DescribedPhoto
 import com.kongedxz.appfiore.presentation.utils.LoadingIndicator
-
-//TODO: move cache to repository, so cache's logic isn't handled on the view
-val cache = mutableMapOf<String, List<PhotoData>>()
 
 @Composable
 fun GalleryScreen(
@@ -38,26 +33,18 @@ fun GalleryScreen(
     onGalleryEntryButtonClick: (PhotoData) -> Unit,
     category: String
 ) {
-    if (cache[category].isNullOrEmpty()) {
-        LaunchedEffect(Unit) {
-            galleryViewModel.getAllPhotos(category)
-        }
-
-        val state by galleryViewModel.photosStateFlow.collectAsState(initial = GalleryViewModel.PhotosUiState())
-
-        LoadingIndicator(state.isLoading)
-
-        when {
-            state.photos.isNotEmpty() -> {
-                PhotoGrid(state.photos, onGalleryEntryButtonClick)
-                cache[category] = state.photos
-            }
-            state.isLoading.not() -> GalleryErrorScreen("No photos")
-        }
-    } else {
-        PhotoGrid(cache[category].orEmpty(), onGalleryEntryButtonClick)
+    LaunchedEffect(Unit) {
+        galleryViewModel.getAllPhotos(category)
     }
 
+    val state by galleryViewModel.photosStateFlow.collectAsState(GalleryViewModel.PhotosUiState())
+
+    LoadingIndicator(state.isLoading)
+
+    when {
+        state.photos.isNotEmpty() -> PhotoGrid(state.photos, onGalleryEntryButtonClick)
+        state.isLoading.not() -> GalleryErrorScreen("No photos")
+    }
 }
 
 @Composable
