@@ -58,3 +58,9 @@ Thumbs.db
 
 # Archivos específicos de otros plugins o herramientas que puedas usar
 # /RealmSwiftDataMigration/ # Ejemplo si usas Realm
+
+# Photos
+/app/src/main/assets/images/galleries/citas/*
+/app/src/main/assets/images/galleries/favoritas/*
+/app/src/main/assets/images/galleries/nostalgia/*
+/app/src/main/assets/images/galleries/viajes/*
