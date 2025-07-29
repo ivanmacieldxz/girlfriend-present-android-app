@@ -14,14 +14,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.kongedxz.appfiore.di.AppDependencyInjector.getGalleryMenuViewModel
 import com.kongedxz.appfiore.di.AppDependencyInjector.getGalleryViewModel
 import com.kongedxz.appfiore.presentation.gallery.photo.PhotoScreen
 import com.kongedxz.appfiore.presentation.gallery.GalleryScreen
 import com.kongedxz.appfiore.presentation.gallery.GalleryMenuScreen
 import com.kongedxz.appfiore.presentation.home.HomeScreen
 import com.kongedxz.appfiore.presentation.phrases.PhrasesScreen
-import com.kongedxz.appfiore.di.AppDependencyInjector.getHomeViewModel
 import com.kongedxz.appfiore.di.AppDependencyInjector.getPhotoViewModel
 import com.kongedxz.appfiore.di.AppDependencyInjector.getPhrasesViewModel
 
@@ -52,14 +50,12 @@ private fun NavGraphBuilder.homeDestination(navController: NavHostController) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             HomeScreen(
                 modifier = Modifier.padding(innerPadding),
-                getHomeViewModel(),
                 onPhrasesButtonClick = {
                     navController.navigate(Routes.PHRASES)
-                },
-                onGalleryMenuButtonClick = {
-                    navController.navigate(Routes.GALLERY)
                 }
-            )
+            ) {
+                navController.navigate(Routes.GALLERY)
+            }
         }
     }
 }
@@ -82,8 +78,7 @@ private fun NavGraphBuilder.galleryMenuDestination(navController: NavHostControl
     ) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             GalleryMenuScreen(
-                modifier = Modifier.padding(innerPadding),
-                getGalleryMenuViewModel()
+                modifier = Modifier.padding(innerPadding)
             ) { gallery ->
                 navController.navigate("${Routes.GALLERY}/${gallery.title}")
             }

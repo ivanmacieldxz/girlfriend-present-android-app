@@ -33,7 +33,6 @@ private val galleries = listOf("Favoritas <3", "Citas <3", "Viajes", "Nostalgia"
 @Composable
 fun GalleryMenuScreen(
     modifier: Modifier = Modifier,
-    galleryMenuViewModel: GalleryMenuViewModel,
     onGalleryButtonClick: (Gallery) -> Unit
 ) {
 

@@ -19,7 +19,6 @@ private const val activityTitle = "Feliz Cumple <3"
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    homeViewModel: HomeViewModel,
     onPhrasesButtonClick: () -> Unit,
     onGalleryMenuButtonClick: () -> Unit
 ) {
