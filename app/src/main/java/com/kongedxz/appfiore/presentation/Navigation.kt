@@ -140,6 +140,8 @@ private fun NavGraphBuilder.photoDestination(navController: NavHostController) {
                     PhotoScreen(
                         modifier = Modifier.padding(innerPadding),
                         getPhotoViewModel(),
+                        photoName = photoId,
+                        category = galleryTitle,
                         onBack = {
                             navController.popBackStack()
                         }

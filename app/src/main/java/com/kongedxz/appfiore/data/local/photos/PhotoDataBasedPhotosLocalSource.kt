@@ -3,7 +3,7 @@ package com.kongedxz.appfiore.data.local.photos
 import android.content.Context
 import org.json.JSONObject
 
-class PhotoDataBasedPhotosLocalsource(): PhotosLocalSource {
+class PhotoDataBasedPhotosLocalSource(): PhotosLocalSource {
 
     private lateinit var context: Context
 
