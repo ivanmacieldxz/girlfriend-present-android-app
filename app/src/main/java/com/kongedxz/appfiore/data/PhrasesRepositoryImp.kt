@@ -1,21 +1,41 @@
 package com.kongedxz.appfiore.data
 
-import com.kongedxz.appfiore.data.local.PhrasesLocalSource
+import com.kongedxz.appfiore.data.local.phrases.PhrasesLocalSource
+import com.kongedxz.appfiore.domain.repository.ERROR_PHRASE
 import com.kongedxz.appfiore.domain.repository.PhrasesRepository
 
 class PhrasesRepositoryImp(private val source: PhrasesLocalSource) : PhrasesRepository {
 
-    override fun getPhrase(): String {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getSeenPhrases(): List<String> =
+        try {
+            source.getSeenPhrases()
+        } catch (e: Exception) {
+            listOf(ERROR_PHRASE)
+        }
 
-    override fun getSeenPhrases(): List<String> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getUnseenPhrases(): List<String> =
+        try {
+            source.getUnseenPhrases()
+        } catch (e: Exception) {
+            listOf(ERROR_PHRASE)
+        }
 
-    override fun getUnseenPhrases(): List<String> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun updateSeenPhrases(updatedSeenPhrasesList: List<String>): Boolean =
+        try {
+            source.setSeenPhrases(updatedSeenPhrasesList)
+            true
+        } catch (_: Exception) {
+            false
+        }
+
+
+    override suspend fun updateUnseenPhrases(updatedUnseenPhrasesList: List<String>): Boolean =
+        try {
+            source.setUnseenPhrases(updatedUnseenPhrasesList)
+            true
+        } catch (_: Exception) {
+            false
+        }
 
 
 }
