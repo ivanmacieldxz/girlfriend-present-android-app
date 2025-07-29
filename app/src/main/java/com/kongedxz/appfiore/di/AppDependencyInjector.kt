@@ -3,7 +3,7 @@ package com.kongedxz.appfiore.di
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.kongedxz.appfiore.data.GalleryRepositoryImp
-import com.kongedxz.appfiore.data.local.photos.PhotoDataBasedPhotosLocalsource
+import com.kongedxz.appfiore.data.local.photos.PhotoDataBasedPhotosLocalSource
 import com.kongedxz.appfiore.data.local.photos.PhotosLocalSource
 import com.kongedxz.appfiore.domain.repository.GalleryRepository
 import com.kongedxz.appfiore.presentation.gallery.photo.PhotoViewModel
@@ -14,14 +14,14 @@ import com.kongedxz.appfiore.presentation.phrases.PhrasesViewModel
 
 object AppDependencyInjector {
 
-    private val photosLocalSource: PhotosLocalSource = PhotoDataBasedPhotosLocalsource()
+    private val photosLocalSource: PhotosLocalSource = PhotoDataBasedPhotosLocalSource()
     private val galleryRepository: GalleryRepository = GalleryRepositoryImp(photosLocalSource)
 
     private val homeViewModel = HomeViewModel()
     private val phrasesViewModel = PhrasesViewModel()
     private val galleryMenuViewModel = GalleryMenuViewModel()
     private val galleryViewModel = GalleryViewModel(galleryRepository)
-    private val photoViewModel = PhotoViewModel()
+    private val photoViewModel = PhotoViewModel(galleryRepository)
 
     @Composable
     fun getHomeViewModel(): HomeViewModel = homeViewModel
