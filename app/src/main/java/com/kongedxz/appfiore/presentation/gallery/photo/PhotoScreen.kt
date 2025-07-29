@@ -45,7 +45,6 @@ fun PhotoScreen(
     photoViewModel: PhotoViewModel,
     photoName: String,
     category: String,
-    onBack: () -> Boolean
 ) {
 
     val photoUiState by photoViewModel.photoStateFlow.collectAsState(PhotoViewModel.PhotoUiState())

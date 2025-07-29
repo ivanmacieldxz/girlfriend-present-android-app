@@ -29,7 +29,6 @@ import com.kongedxz.appfiore.presentation.utils.LoadingIndicator
 fun GalleryScreen(
     modifier: Modifier = Modifier,
     galleryViewModel: GalleryViewModel,
-    onBack: () -> Boolean,
     onGalleryEntryButtonClick: (PhotoData) -> Unit,
     category: String
 ) {

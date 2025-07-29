@@ -69,10 +69,7 @@ private fun NavGraphBuilder.phrasesDestination(navController: NavHostController)
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             PhrasesScreen(
                 modifier = Modifier.padding(innerPadding),
-                getPhrasesViewModel(),
-                onBack = {
-                    navController.popBackStack()
-                }
+                getPhrasesViewModel()
             )
         }
     }
@@ -86,14 +83,10 @@ private fun NavGraphBuilder.galleryMenuDestination(navController: NavHostControl
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             GalleryMenuScreen(
                 modifier = Modifier.padding(innerPadding),
-                getGalleryMenuViewModel(),
-                onBack = {
-                    navController.popBackStack()
-                },
-                onGalleryButtonClick = { gallery ->
-                    navController.navigate("${Routes.GALLERY}/${gallery.title}")
-                }
-            )
+                getGalleryMenuViewModel()
+            ) { gallery ->
+                navController.navigate("${Routes.GALLERY}/${gallery.title}")
+            }
         }
     }
 }
@@ -110,9 +103,6 @@ private fun NavGraphBuilder.galleryDestination(navController: NavHostController)
                 GalleryScreen(
                     modifier = Modifier.padding(innerPadding),
                     getGalleryViewModel(),
-                    onBack = {
-                        navController.popBackStack()
-                    },
                     onGalleryEntryButtonClick = { photo ->
                         navController.navigate("${Routes.GALLERY}/$galleryTitle/${photo.name}")
                     },
@@ -141,10 +131,7 @@ private fun NavGraphBuilder.photoDestination(navController: NavHostController) {
                         modifier = Modifier.padding(innerPadding),
                         getPhotoViewModel(),
                         photoName = photoId,
-                        category = galleryTitle,
-                        onBack = {
-                            navController.popBackStack()
-                        }
+                        category = galleryTitle
                     )
                 }
             }

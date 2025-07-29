@@ -1,6 +1,5 @@
 package com.kongedxz.appfiore.presentation.phrases
 
-import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,11 +12,9 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.kongedxz.appfiore.presentation.utils.ActivityTitleSection
 
 private const val activityTitle = "Frases"
@@ -26,7 +23,6 @@ private const val activityTitle = "Frases"
 fun PhrasesScreen(
     modifier: Modifier = Modifier,
     phrasesViewModel: PhrasesViewModel,
-    onBack: () -> Boolean
 ) {
     Column(
         modifier = modifier
