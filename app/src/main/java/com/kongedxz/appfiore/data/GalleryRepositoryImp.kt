@@ -9,7 +9,7 @@ class GalleryRepositoryImp(private val localSource: PhotosLocalSource): GalleryR
 
     val cache = mutableMapOf<String, List<PhotoData>>()
 
-    override fun getPhotos(category: String): List<PhotoData> {
+    override suspend fun getPhotos(category: String): List<PhotoData> {
         return cache[category]?: try {
             cache[category] = localSource.getAllPhotos(category)
             cache[category]!!
@@ -18,13 +18,15 @@ class GalleryRepositoryImp(private val localSource: PhotosLocalSource): GalleryR
         }
     }
 
-    override fun getPhoto(photoData: PhotoData): DescribedPhoto =
-        photoData.toDescribedPhoto(
-            try {
-                localSource.getPhotoDescription(photoData)
-            } catch (e: Exception) {
-                "data couldn't be loaded for the requested photo"
-            }
-        )
+    override suspend fun getPhoto(photoName: String, category: String): DescribedPhoto =
+        cache[category]!!.first { it.name == photoName }.let {
+            it.toDescribedPhoto(
+                try {
+                    localSource.getPhotoDescription(it)
+                } catch (e: Exception) {
+                    "data couldn't be loaded for the requested photo"
+                }
+            )
+        }
 
 }
