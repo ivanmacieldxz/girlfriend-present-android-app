@@ -32,22 +32,6 @@ fun ActivityTitleSection(title: String = "") {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.P)
-@Composable
-fun IdleCatGif(modifier: Modifier = Modifier) {
-    AsyncImage(
-
-                ImageRequest.Builder(LocalContext.current)
-            .data(R.drawable.idle_cat_centered)
-            .decoderFactory(ImageDecoderDecoder.Factory())
-            .build()
-        ,
-        contentDescription = "Directory Image",
-        modifier = modifier
-            .aspectRatio((42 / 28f) * 1.5f)
-    )
-}
-
 @Composable
 fun LoadingIndicator(enabled: Boolean, modifier: Modifier = Modifier) {
     if (enabled) {
