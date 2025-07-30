@@ -24,7 +24,8 @@ import com.kongedxz.appfiore.presentation.utils.LoadingIndicator
 fun GalleryScreen(
     galleryViewModel: GalleryViewModel,
     onGalleryEntryButtonClick: (PhotoData) -> Unit,
-    category: String
+    category: String,
+    modifier: Modifier = Modifier
 ) {
     LaunchedEffect(Unit) {
         galleryViewModel.getAllPhotos(category)
@@ -35,17 +36,17 @@ fun GalleryScreen(
     LoadingIndicator(state.isLoading)
 
     when {
-        state.photos.isNotEmpty() -> PhotoGrid(state.photos, onGalleryEntryButtonClick)
+        state.photos.isNotEmpty() -> PhotoGrid(modifier, state.photos, onGalleryEntryButtonClick)
         state.isLoading.not() -> ErrorScreen("No photos")
     }
 }
 
 @Composable
-fun PhotoGrid(photoList: List<PhotoData>, onPhotoClick: (PhotoData) -> Unit) {
+fun PhotoGrid(modifier: Modifier = Modifier, photoList: List<PhotoData>, onPhotoClick: (PhotoData) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
         contentPadding = PaddingValues(4.dp),
-        modifier = Modifier
+        modifier = modifier
     ) {
         items(photoList, key = { it.name }) { photo ->
             PhotoItem(
