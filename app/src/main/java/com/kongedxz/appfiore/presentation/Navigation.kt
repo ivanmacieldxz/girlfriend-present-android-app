@@ -94,9 +94,8 @@ private fun NavGraphBuilder.galleryDestination(navController: NavHostController)
         val galleryTitle = backstackEntry.arguments?.getString(Routes.GALLERY_TITLE)
 
         galleryTitle?.let {
-            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            Scaffold(modifier = Modifier.fillMaxSize()) {
                 GalleryScreen(
-                    modifier = Modifier.padding(innerPadding),
                     getGalleryViewModel(),
                     onGalleryEntryButtonClick = { photo ->
                         navController.navigate("${Routes.GALLERY}/$galleryTitle/${photo.name}")

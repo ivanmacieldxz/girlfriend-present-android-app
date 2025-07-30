@@ -3,10 +3,12 @@ package com.kongedxz.appfiore.presentation.utils
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +23,7 @@ import coil.request.ImageRequest
 import com.kongedxz.appfiore.R
 
 @Composable
-fun ActivityTitleSection(modifier: Modifier = Modifier, title: String = "") {
+fun ActivityTitleSection(title: String = "") {
     Spacer(modifier = Modifier.height(150.dp))
 
     Text(
@@ -55,5 +57,22 @@ fun LoadingIndicator(enabled: Boolean, modifier: Modifier = Modifier) {
         ) {
             CircularProgressIndicator()
         }
+    }
+}
+
+@Composable
+fun ErrorScreen(errorText: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = errorText,
+            modifier = Modifier
+        )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
