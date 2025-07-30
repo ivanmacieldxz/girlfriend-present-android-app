@@ -1,5 +1,7 @@
 package com.kongedxz.appfiore.presentation.phrases
 
+import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,14 +10,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.kongedxz.appfiore.presentation.utils.ActivityTitleSection
+import com.kongedxz.appfiore.presentation.utils.ErrorScreen
 
 private const val activityTitle = "Frases"
 
@@ -24,38 +34,89 @@ fun PhrasesScreen(
     modifier: Modifier = Modifier,
     phrasesViewModel: PhrasesViewModel,
 ) {
+    val loadedPhrasesUiState by phrasesViewModel.loadedPhrasesStateFlow.collectAsState(PhrasesViewModel.LoadedPhrasesUiState())
+
+    val phraseText by phrasesViewModel.phraseStateFlow.collectAsState("")
+
+    val emptyUnseenPhrasesList by phrasesViewModel.emptyUnseenPhrasesListStateFlow.collectAsState(false)
+
+    LaunchedEffect(Unit) {
+        phrasesViewModel.loadPhrases()
+    }
+
+    when {
+        loadedPhrasesUiState.wereErrors -> ErrorScreen("Error loading phrases :c")
+        else -> PhrasesNormalScreen(
+            modifier = modifier,
+            phraseText = phraseText,
+            loadedPhrasesUiState = loadedPhrasesUiState,
+            emptyUnseenPhrasesList = emptyUnseenPhrasesList,
+            phrasesViewModel = phrasesViewModel
+        )
+    }
+
+    DisposableEffect(key1 = Unit) {
+        onDispose {
+            phrasesViewModel.saveState()
+        }
+    }
+}
+
+@Composable
+fun PhrasesNormalScreen(
+    modifier: Modifier,
+    phraseText: String,
+    loadedPhrasesUiState: PhrasesViewModel.LoadedPhrasesUiState,
+    phrasesViewModel: PhrasesViewModel,
+    emptyUnseenPhrasesList: Boolean
+) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val phraseText = ""
 
         ActivityTitleSection(title = activityTitle)
 
         Spacer(modifier = Modifier.weight(2f))
 
-
-        TextField(
-            value = phraseText,
-            onValueChange = { /*phrasesViewModel.onPhraseTextChanged(it)*/ },
+        Text(
+            text = phraseText,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 48.dp) // Pequeño margen a ambos lados
                 .aspectRatio(2f) // Hace que el TextField sea cuadrado
-                .background(androidx.compose.ui.graphics.Color.LightGray), // Solo para visualizar el área
-            readOnly = true, // Hace que el TextField no sea modificable
-            singleLine = false // Permite múltiples líneas si el texto es largo
+                .background(Color.LightGray) // Solo para visualizar el área
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { /*phrasesViewModel.onPhraseButtonClick()*/ },
-            modifier = Modifier.fillMaxWidth()
+            onClick = {
+                if (emptyUnseenPhrasesList)
+                    Toast.makeText(context, "No hay más frases", Toast.LENGTH_SHORT).show()
+                else    //else removible en realidad, getNextPhrase no hace nada si está vacía la lista
+                    phrasesViewModel.getNextPhrase()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
-            Text("Cambiar frase")
+            AnimatedVisibility(
+                visible = loadedPhrasesUiState.isDone.not(),
+            ) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.then(Modifier.size(20.dp))
+                )
+            }
+            AnimatedVisibility(
+                visible = loadedPhrasesUiState.isDone,
+            ) {
+                Text(text = "Ver frase")
+            }
         }
 
         Spacer(modifier = Modifier.weight(3f))

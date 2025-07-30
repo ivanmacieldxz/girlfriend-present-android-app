@@ -96,7 +96,6 @@ private fun NavGraphBuilder.galleryDestination(navController: NavHostController)
         galleryTitle?.let {
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 GalleryScreen(
-                    modifier = Modifier.padding(innerPadding),
                     getGalleryViewModel(),
                     onGalleryEntryButtonClick = { photo ->
                         navController.navigate("${Routes.GALLERY}/$galleryTitle/${photo.name}")
