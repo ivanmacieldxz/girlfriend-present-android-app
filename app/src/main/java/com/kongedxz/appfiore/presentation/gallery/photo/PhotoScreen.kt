@@ -7,7 +7,7 @@ import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,14 +21,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -109,31 +115,85 @@ fun PhotoScreen(
             }
 
         }
-        photoUiState.isLoading.not() -> PhotoErrorScreen("Photo couln't be loaded")
+        photoUiState.isLoading.not() -> PhotoErrorScreen("Photo couldn't be loaded")
     }
 }
+
 
 @Composable
 fun PhotoView(
     modifier: Modifier = Modifier,
     photo: DescribedPhoto
 ) {
-    Column(
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    var imageSize by remember { mutableStateOf(IntSize.Zero) }
+    var boxSize by remember { mutableStateOf(IntSize.Zero) }
+
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.DarkGray),
-        verticalArrangement = Arrangement.Center,
+            .background(Color.DarkGray)
+            .onSizeChanged { boxSize = it }
+            .pointerInput(Unit) {
+                detectTransformGestures { centroid, pan, zoom, _ ->
+                    val oldScale = scale
+                    val newScale = (scale * zoom).coerceIn(1f, 5f)
+                    val scaleRatio = newScale / oldScale
+
+                    offsetX =
+                        (offsetX * scaleRatio) +
+                        (centroid.x - boxSize.width / 2f) * (1 - scaleRatio)
+                    offsetY =
+                        (offsetY * scaleRatio) +
+                        (centroid.y - boxSize.height / 2f) * (1 - scaleRatio)
+
+                    scale = newScale
+
+                    if (scale > 1f) {
+                        offsetX += pan.x
+                        offsetY += pan.y
+
+                        val visibleImageWidthAtScale1 =
+                            minOf(boxSize.width.toFloat(), imageSize.width.toFloat())
+                        val visibleImageHeightAtScale1 =
+                            minOf(boxSize.height.toFloat(), imageSize.height.toFloat())
+
+                        val maxOverflowX =
+                            (visibleImageWidthAtScale1 * scale - boxSize.width).coerceAtLeast(0f) / 2f
+                        val maxOverflowY =
+                            (visibleImageHeightAtScale1 * scale - boxSize.height).coerceAtLeast(0f) / 2f
+
+                        offsetX = offsetX.coerceIn(-maxOverflowX, maxOverflowX)
+                        offsetY = offsetY.coerceIn(-maxOverflowY, maxOverflowY)
+                    } else {
+                        offsetX = 0f
+                        offsetY = 0f
+                    }
+                }
+            }
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(photo.photoData.assetsUri)
                 .build(),
-            contentDescription = null,
-            modifier = modifier
+            contentDescription = "Zoomable image",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .onSizeChanged { imageSize = it }
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale,
+                    translationX = offsetX,
+                    translationY = offsetY
+                )
                 .fillMaxWidth()
         )
     }
 }
+
 
 @Composable
 fun PhotoDescriptionIcon(
