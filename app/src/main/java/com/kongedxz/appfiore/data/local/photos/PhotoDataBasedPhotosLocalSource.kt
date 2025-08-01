@@ -1,45 +1,45 @@
 package com.kongedxz.appfiore.data.local.photos
 
 import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
-class PhotoDataBasedPhotosLocalSource(): PhotosLocalSource {
+class PhotoDataBasedPhotosLocalSource(override val context: Context) : PhotosLocalSource {
 
-    private lateinit var context: Context
 
     /**
      * Might throw IOException when listing a category that doesn't exist
      */
-    override fun getAllPhotos(category: String): List<PhotoData> {
-        val photoList = mutableListOf<PhotoData>()
-        val photosNames = getPhotosNames(category)
+    override suspend fun getAllPhotos(category: String): List<PhotoData> =
+        withContext(Dispatchers.IO) {
 
-        photosNames.forEach { imageFileName ->
-            val photoName = getFilenameWithoutExtension(imageFileName)
-            photoList.add(
-                PhotoData(
-                    name = photoName,
-                    assetsUri = getPhotosUriByName(category, imageFileName),
-                    category = category
+            val photoList = mutableListOf<PhotoData>()
+            val photosNames = getPhotosNames(category)
+
+            photosNames.forEach { imageFileName ->
+                val photoName = getFilenameWithoutExtension(imageFileName)
+                photoList.add(
+                    PhotoData(
+                        name = photoName,
+                        assetsUri = getPhotosUriByName(category, imageFileName),
+                        category = category
+                    )
                 )
-            )
+            }
+
+            photoList
         }
 
-        return photoList
-    }
+    override suspend fun getPhotoDescription(photoData: PhotoData): String =
+        withContext(Dispatchers.IO) {
+            val jsonObject = JSONObject(context.assets.open("json/photos.json")
+                .bufferedReader()
+                .use { it.readText() })
 
-    override fun setContext(context: Context) {
-        this.context = context
-    }
+            val categoryJSONObject = jsonObject.getJSONObject(photoData.category)
 
-    override fun getPhotoDescription(photoData: PhotoData): String {
-        val jsonObject = JSONObject(context.assets.open("json/photos.json")
-            .bufferedReader()
-            .use { it.readText() })
-
-        val categoryJSONObject = jsonObject.getJSONObject(photoData.category)
-
-        return categoryJSONObject.getString(photoData.name)
+            categoryJSONObject.getString(photoData.name)
     }
 
     /**

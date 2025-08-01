@@ -36,7 +36,10 @@ object Routes {
 fun Navigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Routes.HOME) {
+    NavHost(
+        navController = navController,
+        startDestination = Routes.HOME,
+    ) {
         homeDestination(navController)
         phrasesDestination(navController)
         galleryMenuDestination(navController)
@@ -52,10 +55,11 @@ private fun NavGraphBuilder.homeDestination(navController: NavHostController) {
                 modifier = Modifier.padding(innerPadding),
                 onPhrasesButtonClick = {
                     navController.navigate(Routes.PHRASES)
+                },
+                onGalleryMenuButtonClick = {
+                    navController.navigate(Routes.GALLERY)
                 }
-            ) {
-                navController.navigate(Routes.GALLERY)
-            }
+            )
         }
     }
 }
