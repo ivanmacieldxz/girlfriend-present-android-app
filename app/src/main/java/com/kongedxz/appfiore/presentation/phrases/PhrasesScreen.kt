@@ -13,10 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -35,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.kongedxz.appfiore.presentation.utils.ActivityTitleSection
 import com.kongedxz.appfiore.presentation.utils.ErrorScreen
+import com.kongedxz.appfiore.presentation.utils.RoundedTopCornersColumn
 
 private const val activityTitle = "Frases"
 
@@ -70,8 +68,6 @@ fun PhrasesScreen(
         )
     }
 }
-
-//TODO: improve seenPhrases section ui
 
 @Composable
 fun PhrasesNormalScreen(
@@ -161,13 +157,7 @@ fun PhrasesNormalScreen(
                 enter = expandVertically(),
                 exit = shrinkVertically()
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .requiredHeightIn(max = 200.dp)
-                    .verticalScroll(rememberScrollState())
-                    .background(Color.Red),
-            ) {
+            RoundedTopCornersColumn {
                 val seenPhrases = phrasesViewModel.getSeenPhrases()
 
                 seenPhrases.forEach {

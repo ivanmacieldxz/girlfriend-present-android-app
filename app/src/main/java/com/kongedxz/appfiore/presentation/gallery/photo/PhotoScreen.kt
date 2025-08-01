@@ -1,10 +1,10 @@
 package com.kongedxz.appfiore.presentation.gallery.photo
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,10 +15,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,12 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kongedxz.appfiore.R
 import com.kongedxz.appfiore.domain.entity.DescribedPhoto
 import com.kongedxz.appfiore.presentation.utils.LoadingIndicator
+import com.kongedxz.appfiore.presentation.utils.RoundedTopCornersColumn
+
 lateinit var photo: DescribedPhoto
 
 @Composable
@@ -91,10 +91,15 @@ fun PhotoScreen(
 
                 AnimatedVisibility(
                     isDescriptionVisible,
-                    modifier = modifier.align(Alignment.BottomCenter),
-                    enter = expandVertically() + fadeIn(),
-                    exit = shrinkVertically() + fadeOut()
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                    enter = slideIn(
+                        initialOffset = { IntOffset(0, it.height) }
+                    ),
+                    exit = slideOut(
+                        targetOffset = { IntOffset(0, it.height) }
+                    )
                 ) {
+                    
                     PhotoDescription(
                         modifier = modifier
                             .fillMaxWidth(),
@@ -147,15 +152,7 @@ fun PhotoDescriptionIcon(
 
 @Composable
 fun PhotoDescription(modifier: Modifier, photo: DescribedPhoto) {
-    Column(
-        modifier = modifier
-            .requiredHeightIn(max = 200.dp)
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    RoundedTopCornersColumn(modifier, maxHeight = 650.dp) {
         Text(photo.desc)
     }
 }
