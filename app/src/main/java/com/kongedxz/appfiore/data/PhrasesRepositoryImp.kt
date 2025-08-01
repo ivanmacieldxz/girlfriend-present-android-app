@@ -1,7 +1,6 @@
 package com.kongedxz.appfiore.data
 
 import com.kongedxz.appfiore.data.local.phrases.PhrasesLocalSource
-import com.kongedxz.appfiore.domain.repository.ERROR_PHRASE
 import com.kongedxz.appfiore.domain.repository.PhrasesRepository
 
 class PhrasesRepositoryImp(private val source: PhrasesLocalSource) : PhrasesRepository {
@@ -9,15 +8,15 @@ class PhrasesRepositoryImp(private val source: PhrasesLocalSource) : PhrasesRepo
     override suspend fun getSeenPhrases(): List<String> =
         try {
             source.getSeenPhrases()
-        } catch (e: Exception) {
-            listOf(ERROR_PHRASE)
+        } catch (_: Exception) {
+            listOf(PhrasesRepository.ERROR_PHRASE)
         }
 
     override suspend fun getUnseenPhrases(): List<String> =
         try {
             source.getUnseenPhrases()
-        } catch (e: Exception) {
-            listOf(ERROR_PHRASE)
+        } catch (_: Exception) {
+            listOf(PhrasesRepository.ERROR_PHRASE)
         }
 
     override suspend fun updateSeenPhrases(updatedSeenPhrasesList: List<String>): Boolean =

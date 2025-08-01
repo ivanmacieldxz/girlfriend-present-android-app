@@ -2,8 +2,8 @@ package com.kongedxz.appfiore.presentation.phrases
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kongedxz.appfiore.domain.repository.ERROR_PHRASE
 import com.kongedxz.appfiore.domain.repository.PhrasesRepository
+import com.kongedxz.appfiore.domain.repository.PhrasesRepository.Companion.ERROR_PHRASE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -14,13 +14,13 @@ class PhrasesViewModel(private val phrasesRepository: PhrasesRepository) : ViewM
     val loadedPhrasesStateFlow: Flow<LoadedPhrasesUiState> = loadedPhrasesMutableStateFlow
 
     private var lastSeenPhrase = ""
-    private val phraseMutableStateFlow = MutableStateFlow<String>(value = lastSeenPhrase)
+    private val phraseMutableStateFlow = MutableStateFlow(value = lastSeenPhrase)
     val phraseStateFlow: Flow<String> = phraseMutableStateFlow
 
     private val seenPhrases: MutableList<String> = mutableListOf()
     private val unseenPhrases: MutableList<String> = mutableListOf()
 
-    private val emptyUnseenPhrasesListMutableStateFlow = MutableStateFlow<Boolean>(false)
+    private val emptyUnseenPhrasesListMutableStateFlow = MutableStateFlow(false)
     val emptyUnseenPhrasesListStateFlow: Flow<Boolean> = emptyUnseenPhrasesListMutableStateFlow
 
     fun loadPhrases() {

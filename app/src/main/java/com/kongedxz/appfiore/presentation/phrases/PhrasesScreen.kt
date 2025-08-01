@@ -99,9 +99,9 @@ fun PhrasesNormalScreen(
                 text = phraseText,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 48.dp) // Pequeño margen a ambos lados
-                    .aspectRatio(2f) // Hace que el TextField sea cuadrado
-                    .background(Color.LightGray) // Solo para visualizar el área
+                    .padding(horizontal = 48.dp)
+                    .aspectRatio(2f)
+                    .background(Color.LightGray)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -109,8 +109,8 @@ fun PhrasesNormalScreen(
             Button(
                 onClick = {
                     if (emptyUnseenPhrasesList)
-                        Toast.makeText(context, "No hay más frases", Toast.LENGTH_SHORT).show()
-                    else    //else removible en realidad, getNextPhrase no hace nada si está vacía la lista
+                        Toast.makeText(context, "No hay más frases :c", Toast.LENGTH_SHORT).show()
+                    else
                         phrasesViewModel.getNextPhrase()
                 },
                 modifier = Modifier

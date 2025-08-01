@@ -13,7 +13,7 @@ class GalleryRepositoryImp(private val localSource: PhotosLocalSource): GalleryR
         return cache[category]?: try {
             cache[category] = localSource.getAllPhotos(category)
             cache[category]!!
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             emptyList()
         }
     }
@@ -23,7 +23,7 @@ class GalleryRepositoryImp(private val localSource: PhotosLocalSource): GalleryR
             it.toDescribedPhoto(
                 try {
                     localSource.getPhotoDescription(it)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     "data couldn't be loaded for the requested photo"
                 }
             )

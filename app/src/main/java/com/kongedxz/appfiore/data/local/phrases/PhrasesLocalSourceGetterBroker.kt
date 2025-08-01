@@ -11,7 +11,7 @@ class PhrasesLocalSourceGetterBroker(
     override suspend fun getSeenPhrases(): List<String> =
         try {
             mutablePhrasesLocalSourceGetter.getSeenPhrases()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             initialPhrasesLocalSourceGetter.getSeenPhrases()
         }
 
@@ -19,7 +19,7 @@ class PhrasesLocalSourceGetterBroker(
     override suspend fun getUnseenPhrases(): List<String> =
         try {
             mutablePhrasesLocalSourceGetter.getUnseenPhrases()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             initialPhrasesLocalSourceGetter.getUnseenPhrases()
         }
 }

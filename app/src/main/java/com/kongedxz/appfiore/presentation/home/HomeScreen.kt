@@ -24,32 +24,30 @@ fun HomeScreen(
 ) {
     Column (
         modifier = modifier
-            .fillMaxSize()      // Ocupa tod el espacio disponible
-            .padding(16.dp),    // Añade un poco de relleno alrededor de la columna
-        horizontalAlignment = Alignment.CenterHorizontally      // Centra los hijos horizontalmente
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ActivityTitleSection(title = activityTitle)
 
-        // Spacer para crear espacio entre el texto y los botones
         Spacer(modifier = Modifier.weight(2f))
 
         Button(
             onClick = { onPhrasesButtonClick() },
-            modifier = Modifier.fillMaxWidth() // Hace que el botón ocupe el ancho disponible
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("> Frases <")
         }
 
-        Spacer(modifier = Modifier.height(24.dp)) // Espacio de tamaño fijo entre botones
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = { onGalleryMenuButtonClick() },
-            modifier = Modifier.fillMaxWidth() // Hace que el botón ocupe el ancho disponible
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("> Fotos <")
         }
 
-        // Spacer para empujar los botones y el texto hacia arriba
         Spacer(modifier = Modifier.weight(2f))
     }
 }
