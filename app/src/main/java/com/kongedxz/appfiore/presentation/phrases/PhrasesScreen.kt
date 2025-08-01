@@ -2,7 +2,10 @@ package com.kongedxz.appfiore.presentation.phrases
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -10,7 +13,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -19,6 +25,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +53,12 @@ fun PhrasesScreen(
         phrasesViewModel.loadPhrases()
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            phrasesViewModel.saveState()
+        }
+    }
+
     when {
         loadedPhrasesUiState.wereErrors -> ErrorScreen("Error loading phrases :c")
         else -> PhrasesNormalScreen(
@@ -54,13 +69,9 @@ fun PhrasesScreen(
             phrasesViewModel = phrasesViewModel
         )
     }
-
-    DisposableEffect(key1 = Unit) {
-        onDispose {
-            phrasesViewModel.saveState()
-        }
-    }
 }
+
+//TODO: improve seenPhrases section ui
 
 @Composable
 fun PhrasesNormalScreen(
@@ -71,54 +82,103 @@ fun PhrasesNormalScreen(
     emptyUnseenPhrasesList: Boolean
 ) {
     val context = LocalContext.current
+    var showSeenPhrases by remember { mutableStateOf(false) }
 
-    Column(
+    Box (
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        ActivityTitleSection(title = activityTitle)
-
-        Spacer(modifier = Modifier.weight(2f))
-
-        Text(
-            text = phraseText,
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 48.dp) // Pequeño margen a ambos lados
-                .aspectRatio(2f) // Hace que el TextField sea cuadrado
-                .background(Color.LightGray) // Solo para visualizar el área
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                if (emptyUnseenPhrasesList)
-                    Toast.makeText(context, "No hay más frases", Toast.LENGTH_SHORT).show()
-                else    //else removible en realidad, getNextPhrase no hace nada si está vacía la lista
-                    phrasesViewModel.getNextPhrase()
-            },
-            modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            AnimatedVisibility(
-                visible = loadedPhrasesUiState.isDone.not(),
+
+            ActivityTitleSection(title = activityTitle)
+
+            Spacer(modifier = Modifier.weight(2f))
+
+            Text(
+                text = phraseText,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 48.dp) // Pequeño margen a ambos lados
+                    .aspectRatio(2f) // Hace que el TextField sea cuadrado
+                    .background(Color.LightGray) // Solo para visualizar el área
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = {
+                    if (emptyUnseenPhrasesList)
+                        Toast.makeText(context, "No hay más frases", Toast.LENGTH_SHORT).show()
+                    else    //else removible en realidad, getNextPhrase no hace nada si está vacía la lista
+                        phrasesViewModel.getNextPhrase()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                CircularProgressIndicator(
-                    color = Color.White,
-                    modifier = Modifier.then(Modifier.size(20.dp))
-                )
+                AnimatedVisibility(
+                    visible = loadedPhrasesUiState.isDone.not(),
+                ) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.then(Modifier.size(20.dp))
+                    )
+                }
+                AnimatedVisibility(
+                    visible = loadedPhrasesUiState.isDone,
+                ) {
+                    Text(text = "Ver frase")
+                }
             }
-            AnimatedVisibility(
-                visible = loadedPhrasesUiState.isDone,
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = {
+                    showSeenPhrases = showSeenPhrases.not()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                Text(text = "Ver frase")
+                AnimatedVisibility(
+                    visible = loadedPhrasesUiState.isDone,
+                ) {
+                    Text(text = "Frases ya vistas")
+                }
             }
+
+            Spacer(modifier = Modifier.weight(3f))
         }
 
-        Spacer(modifier = Modifier.weight(3f))
+        AnimatedVisibility(
+            showSeenPhrases,
+            modifier = Modifier.
+                align(Alignment.BottomCenter),
+                enter = expandVertically(),
+                exit = shrinkVertically()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeightIn(max = 200.dp)
+                    .verticalScroll(rememberScrollState())
+                    .background(Color.Red),
+            ) {
+                val seenPhrases = phrasesViewModel.getSeenPhrases()
+
+                seenPhrases.forEach {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                        text = it
+                    )
+                }
+            }
+        }
     }
 }

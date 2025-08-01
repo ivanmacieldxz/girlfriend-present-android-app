@@ -29,8 +29,20 @@ class PhrasesViewModel(private val phrasesRepository: PhrasesRepository) : ViewM
                 LoadedPhrasesUiState()
             )
 
-            seenPhrases.addAll(phrasesRepository.getSeenPhrases())
-            unseenPhrases.addAll(phrasesRepository.getUnseenPhrases())
+            seenPhrases.apply {
+                clear()
+                addAll(phrasesRepository.getSeenPhrases())
+            }
+            unseenPhrases.apply {
+                clear()
+                addAll(phrasesRepository.getUnseenPhrases())
+            }
+
+            if (unseenPhrases.isEmpty())
+                emptyUnseenPhrasesListMutableStateFlow.value = true
+
+            if (lastSeenPhrase.isEmpty().not())
+                phraseMutableStateFlow.value = lastSeenPhrase
 
             loadedPhrasesMutableStateFlow.emit(
                 LoadedPhrasesUiState(
@@ -59,6 +71,10 @@ class PhrasesViewModel(private val phrasesRepository: PhrasesRepository) : ViewM
             phrasesRepository.updateSeenPhrases(seenPhrases)
             phrasesRepository.updateUnseenPhrases(unseenPhrases)
         }
+    }
+
+    fun getSeenPhrases(): List<String> {
+        return seenPhrases
     }
 
     private fun seenPhrasesListHasErrors() =
