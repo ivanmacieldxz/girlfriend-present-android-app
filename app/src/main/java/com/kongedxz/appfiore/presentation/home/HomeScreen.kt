@@ -3,9 +3,9 @@ package com.kongedxz.appfiore.presentation.home
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +25,7 @@ fun HomeScreen(
     Column (
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ActivityTitleSection(title = activityTitle)
@@ -34,7 +34,8 @@ fun HomeScreen(
 
         Button(
             onClick = { onPhrasesButtonClick() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .width(250.dp)
         ) {
             Text("> Frases <")
         }
@@ -43,7 +44,7 @@ fun HomeScreen(
 
         Button(
             onClick = { onGalleryMenuButtonClick() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.width(250.dp)
         ) {
             Text("> Fotos <")
         }

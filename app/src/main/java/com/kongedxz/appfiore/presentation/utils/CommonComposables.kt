@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kongedxz.appfiore.presentation.theme.lighterBackgroundColor
 
 @Composable
 fun ActivityTitleSection(title: String = "") {
@@ -28,7 +29,7 @@ fun ActivityTitleSection(title: String = "") {
 
     Text(
         text = title,
-        fontSize = 30.sp
+        fontSize = 48.sp
     )
 }
 
@@ -64,7 +65,7 @@ fun ErrorScreen(errorText: String) {
 @Composable
 fun RoundedTopCornersColumn(
     modifier: Modifier = Modifier,
-    color: Color = Color.White,
+    color: Color = lighterBackgroundColor,
     maxHeight: Dp = 200.dp,
     content: @Composable () -> Unit
 ) {

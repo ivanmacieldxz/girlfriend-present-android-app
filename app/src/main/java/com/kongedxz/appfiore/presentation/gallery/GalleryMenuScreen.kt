@@ -26,19 +26,37 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.kongedxz.appfiore.domain.entity.Gallery
 import com.kongedxz.appfiore.R
+import com.kongedxz.appfiore.presentation.theme.pastelBackgroundColor
 import com.kongedxz.appfiore.presentation.utils.ActivityTitleSection
 
 private const val activityTitle = "Galería"
-private val galleries = listOf("Favoritas <3", "Citas <3", "Viajes", "Nostalgia")
+
+private object GalleryTitles {
+    const val GALLERY1 = "Favoritas <3"
+    const val GALLERY2 = "Citas <3"
+    const val GALLERY3 = "Viajes"
+    const val GALLERY4 = "De chicos :'c"
+}
+
+private val galleries = listOf(
+    GalleryTitles.GALLERY1,
+    GalleryTitles.GALLERY2,
+    GalleryTitles.GALLERY3,
+    GalleryTitles.GALLERY4
+)
+private val galleriesMap = mapOf(
+    GalleryTitles.GALLERY1 to "favoritas",
+    GalleryTitles.GALLERY2 to "citas",
+    GalleryTitles.GALLERY3 to "viajes",
+    GalleryTitles.GALLERY4 to "nostalgia"
+)
 
 private var imagesDoneLoadingInitialValue = false
 
@@ -72,7 +90,11 @@ fun GalleryMenuScreen(
                     modifier = Modifier
                         .clickable {
                             onGalleryButtonClick(
-                                Gallery(getCuratedGalleryName(galleries[index]))
+                                Gallery(
+                                    galleriesMap[
+                                            galleries[index]
+                                    ]!!
+                                )
                             )
                         }
                         .padding(8.dp),
@@ -96,7 +118,6 @@ fun GalleryMenuScreen(
 
                     Text(
                         text = galleries[index],
-                        fontSize = 18.sp,
                         modifier = Modifier
                     )
                 }
@@ -112,7 +133,7 @@ fun GalleryMenuScreen(
                 .decoderFactory(ImageDecoderDecoder.Factory())
                 .build()
             ,
-            contentDescription = "Directory Image",
+            contentDescription = "Kitten",
             modifier = Modifier
                 .aspectRatio((42 / 28f) * 1.5f)
                 .padding(bottom = 5.dp),
@@ -129,13 +150,9 @@ fun GalleryMenuScreen(
         visible = imagesDoneLoading.not(),
         modifier = modifier.fillMaxSize()
     ) {
-        Box(modifier = modifier.fillMaxSize().background(Color.White), contentAlignment = Alignment.Center) {
+        Box(modifier = modifier.fillMaxSize().background(pastelBackgroundColor), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
     }
 
-}
-
-private fun getCuratedGalleryName(galleryName: String): String {
-    return galleryName.substringBefore(' ').lowercase()
 }

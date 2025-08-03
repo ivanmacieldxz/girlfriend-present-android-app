@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.kongedxz.appfiore.presentation.theme.lighterBackgroundColor
 import com.kongedxz.appfiore.presentation.utils.ActivityTitleSection
 import com.kongedxz.appfiore.presentation.utils.ErrorScreen
 import com.kongedxz.appfiore.presentation.utils.RoundedTopCornersColumn
@@ -95,14 +98,23 @@ fun PhrasesNormalScreen(
 
             Spacer(modifier = Modifier.weight(2f))
 
-            Text(
-                text = phraseText,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 48.dp)
                     .aspectRatio(2f)
-                    .background(Color.LightGray)
-            )
+                    .background(
+                        color = lighterBackgroundColor,
+                        shape = RoundedCornerShape(4.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = phraseText,
+                    modifier = Modifier
+                        .padding(12.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -113,8 +125,7 @@ fun PhrasesNormalScreen(
                     else
                         phrasesViewModel.getNextPhrase()
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.width(250.dp)
             ) {
                 AnimatedVisibility(
                     visible = loadedPhrasesUiState.isDone.not(),
@@ -137,8 +148,7 @@ fun PhrasesNormalScreen(
                 onClick = {
                     showSeenPhrases = showSeenPhrases.not()
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.width(250.dp)
             ) {
                 AnimatedVisibility(
                     visible = loadedPhrasesUiState.isDone,
@@ -164,8 +174,10 @@ fun PhrasesNormalScreen(
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
-                        text = it
+//                            .background(Color.Blue)
+                            .padding(bottom = 4.dp),
+//                            .background(Color.Red),
+                        text = it,
                     )
                 }
             }
