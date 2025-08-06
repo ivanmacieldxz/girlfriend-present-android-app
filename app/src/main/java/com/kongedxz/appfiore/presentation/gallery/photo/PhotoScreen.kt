@@ -1,6 +1,8 @@
 package com.kongedxz.appfiore.presentation.gallery.photo
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
@@ -44,7 +46,7 @@ import com.kongedxz.appfiore.domain.entity.Photo
 import com.kongedxz.appfiore.presentation.utils.LoadingIndicator
 import com.kongedxz.appfiore.presentation.utils.RoundedTopCornersColumn
 
-lateinit var photo: Photo
+private lateinit var photo: Photo
 
 @Composable
 fun PhotoScreen(
@@ -58,6 +60,12 @@ fun PhotoScreen(
     var areButtonsVisible by remember { mutableStateOf(true) }
     var isDescriptionVisible by remember { mutableStateOf(false) }
 
+    val nextPhotoUiState by photoViewModel.nextPhotoStateFlow.collectAsState(PhotoViewModel.PhotoUiState())
+    val prevPhotoUiState by photoViewModel.previousPhotoStateFlow.collectAsState(PhotoViewModel.PhotoUiState())
+
+    var displayNextButton by remember { mutableStateOf(false) }
+    var displayPrevButton by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         photoViewModel.getDescribedPhoto(photoName)
     }
@@ -68,17 +76,36 @@ fun PhotoScreen(
         photoUiState.photo != null -> {
             photo = photoUiState.photo!!
 
+            LaunchedEffect(photo) {
+                photoViewModel.getNextPhoto(category)
+                photoViewModel.getPreviousPhoto(category)
+            }
+
+            LaunchedEffect(nextPhotoUiState.photo) {
+                displayNextButton = nextPhotoUiState.photo != null
+            }
+
+            LaunchedEffect(prevPhotoUiState.photo) {
+                displayPrevButton = prevPhotoUiState.photo != null
+            }
+
             Box (
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color.DarkGray)
             ) {
-                PhotoView(
-                    modifier = Modifier.clickable {
-                        areButtonsVisible = !areButtonsVisible
-                        isDescriptionVisible = false
-                    },
-                    photo = photo
-                )
+                Crossfade(
+                    targetState = photo,
+                    animationSpec = tween(durationMillis = 300),
+                ) { it ->
+                    PhotoView(
+                        modifier = Modifier.clickable {
+                            areButtonsVisible = !areButtonsVisible
+                            isDescriptionVisible = false
+                        },
+                        photo = it
+                    )
+                }
 
                 AnimatedVisibility(
                     areButtonsVisible,
@@ -88,7 +115,6 @@ fun PhotoScreen(
                 ) {
                     PhotoDescriptionIcon(
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
                             .padding(16.dp, 20.dp)
                             .clickable {
                                 isDescriptionVisible = !isDescriptionVisible
@@ -114,26 +140,36 @@ fun PhotoScreen(
                     )
                 }
 
+
                 AnimatedVisibility(
-                    areButtonsVisible,
-                    modifier = Modifier.align(Alignment.CenterStart),
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    PhotoNavigationIcon(
-                        left = true,
-                        modifier = Modifier.padding(4.dp)
-                    )
-                }
-                AnimatedVisibility(
-                    areButtonsVisible,
+                    areButtonsVisible && displayNextButton,
                     modifier = Modifier.align(Alignment.CenterEnd),
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {
                     PhotoNavigationIcon(
                         left = false,
-                        modifier = Modifier.padding(4.dp)
+                        modifier = Modifier
+                            .padding(vertical = 200.dp, horizontal = 6.dp)
+                            .clickable {
+                                photoViewModel.goToNextPhoto()
+                            }
+                    )
+                }
+
+                AnimatedVisibility(
+                    areButtonsVisible && displayPrevButton,
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    PhotoNavigationIcon(
+                        left = true,
+                        modifier = Modifier
+                            .padding(6.dp)
+                            .clickable {
+                                photoViewModel.goToPrevPhoto()
+                            }
                     )
                 }
             }
@@ -168,10 +204,10 @@ fun PhotoView(
 
                     offsetX =
                         (offsetX * scaleRatio) +
-                        (centroid.x - boxSize.width / 2f) * (1 - scaleRatio)
+                                (centroid.x - boxSize.width / 2f) * (1 - scaleRatio)
                     offsetY =
                         (offsetY * scaleRatio) +
-                        (centroid.y - boxSize.height / 2f) * (1 - scaleRatio)
+                                (centroid.y - boxSize.height / 2f) * (1 - scaleRatio)
 
                     scale = newScale
 
@@ -236,7 +272,7 @@ fun PhotoDescriptionIcon(
 
 @Composable
 fun PhotoDescription(modifier: Modifier, photo: Photo) {
-    RoundedTopCornersColumn(maxHeight = 650.dp) {
+    RoundedTopCornersColumn(modifier = modifier, maxHeight = 650.dp) {
         Text(photo.desc)
     }
 }
@@ -249,7 +285,7 @@ fun PhotoNavigationIcon(modifier: Modifier = Modifier, left: Boolean) {
             .build(),
         contentDescription = "navigation-${if (left) "left" else "right"}-button",
         modifier = modifier
-            .size(28.dp)
+            .size(36.dp)
             .aspectRatio(1f)
             .rotate(
                 if (left) 180f else 0f

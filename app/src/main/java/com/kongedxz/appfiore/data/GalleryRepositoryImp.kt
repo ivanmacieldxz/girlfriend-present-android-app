@@ -41,6 +41,28 @@ class GalleryRepositoryImp(private val localSource: PhotosLocalSource): GalleryR
         )
     }
 
+    override suspend fun getPreviousPhoto(photoData: PhotoData, category: String): Photo? {
+        val prev = cache[category]!!.getOrNull(
+            cache[category]!!.indexOf(photoData) - 1
+        )
+
+        return prev?.toDomainPhoto(
+                localSource.getPhotoDescription(prev),
+        localSource.getCategories(prev)
+        )
+    }
+
+    override suspend fun getNextPhoto(photoData: PhotoData, category: String): Photo? {
+        val next = cache[category]!!.getOrNull(
+            cache[category]!!.indexOf(photoData) + 1
+        )
+
+        return next?.toDomainPhoto(
+            localSource.getPhotoDescription(next),
+            localSource.getCategories(next)
+        )
+    }
+
 
     private suspend fun makeCaches(list: List<PhotoData>) {
         list.forEach { photoData ->
