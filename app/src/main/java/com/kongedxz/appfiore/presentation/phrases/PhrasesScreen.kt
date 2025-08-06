@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -84,11 +87,11 @@ fun PhrasesNormalScreen(
     var showSeenPhrases by remember { mutableStateOf(false) }
 
     Box (
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -109,9 +112,11 @@ fun PhrasesNormalScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
+                val scrollState = rememberScrollState()
                 Text(
                     text = phraseText,
                     modifier = Modifier
+                        .verticalScroll(scrollState)
                         .padding(12.dp)
                 )
             }
