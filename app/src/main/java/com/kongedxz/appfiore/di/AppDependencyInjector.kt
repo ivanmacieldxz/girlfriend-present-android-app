@@ -3,7 +3,7 @@ package com.kongedxz.appfiore.di
 import com.kongedxz.appfiore.MainActivity
 import com.kongedxz.appfiore.data.GalleryRepositoryImp
 import com.kongedxz.appfiore.data.PhrasesRepositoryImp
-import com.kongedxz.appfiore.data.local.photos.PhotoDataBasedPhotosLocalSource
+import com.kongedxz.appfiore.data.local.photos.PhotosLocalSourceImp
 import com.kongedxz.appfiore.data.local.photos.PhotosLocalSource
 import com.kongedxz.appfiore.data.local.phrases.AssetsJSONPhrasesLocalSourceGetter
 import com.kongedxz.appfiore.data.local.phrases.InternalStorageJSONPhrasesLocalSourceGetter
@@ -68,7 +68,7 @@ object AppDependencyInjector {
     }
 
     private fun getPhotosLocalSource(): PhotosLocalSource {
-        photosLocalSource = PhotoDataBasedPhotosLocalSource(
+        photosLocalSource = PhotosLocalSourceImp(
             context = mainActivity!!.applicationContext
         )
 
