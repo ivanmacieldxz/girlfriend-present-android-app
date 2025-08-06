@@ -2,7 +2,7 @@ package com.kongedxz.appfiore.presentation.gallery.photo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kongedxz.appfiore.domain.entity.DescribedPhoto
+import com.kongedxz.appfiore.domain.entity.Photo
 import com.kongedxz.appfiore.domain.repository.GalleryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +16,14 @@ class PhotoViewModel(
 
     val photoStateFlow: Flow<PhotoUiState> = photoMutableStateFlow
 
-    fun getDescribedPhoto(photoName: String, category: String) {
+    fun getDescribedPhoto(photoName: String) {
         viewModelScope.launch {
             photoMutableStateFlow.emit(
                 PhotoUiState(isLoading = true)
             )
             photoMutableStateFlow.emit(
                 PhotoUiState(
-                    photo = galleryRepository.getPhoto(photoName, category),
+                    photo = galleryRepository.getPhoto(photoName),
                     isLoading = false
                 )
             )
@@ -31,7 +31,7 @@ class PhotoViewModel(
     }
 
     data class PhotoUiState (
-        val photo: DescribedPhoto? = null,
+        val photo: Photo? = null,
         val isLoading: Boolean = false
     )
 

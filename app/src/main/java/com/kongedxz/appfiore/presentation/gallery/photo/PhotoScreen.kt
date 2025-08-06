@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -39,11 +40,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kongedxz.appfiore.R
-import com.kongedxz.appfiore.domain.entity.DescribedPhoto
+import com.kongedxz.appfiore.domain.entity.Photo
 import com.kongedxz.appfiore.presentation.utils.LoadingIndicator
 import com.kongedxz.appfiore.presentation.utils.RoundedTopCornersColumn
 
-lateinit var photo: DescribedPhoto
+lateinit var photo: Photo
 
 @Composable
 fun PhotoScreen(
@@ -54,11 +55,11 @@ fun PhotoScreen(
 ) {
 
     val photoUiState by photoViewModel.photoStateFlow.collectAsState(PhotoViewModel.PhotoUiState())
-    var isDescriptionButtonVisible by remember { mutableStateOf(true) }
+    var areButtonsVisible by remember { mutableStateOf(true) }
     var isDescriptionVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        photoViewModel.getDescribedPhoto(photoName, category)
+        photoViewModel.getDescribedPhoto(photoName)
     }
 
     LoadingIndicator(photoUiState.isLoading)
@@ -73,14 +74,14 @@ fun PhotoScreen(
             ) {
                 PhotoView(
                     modifier = Modifier.clickable {
-                        isDescriptionButtonVisible = !isDescriptionButtonVisible
+                        areButtonsVisible = !areButtonsVisible
                         isDescriptionVisible = false
                     },
                     photo = photo
                 )
 
                 AnimatedVisibility(
-                    isDescriptionButtonVisible,
+                    areButtonsVisible,
                     modifier = modifier.align(Alignment.TopEnd),
                     enter = fadeIn(),
                     exit = fadeOut()
@@ -112,6 +113,29 @@ fun PhotoScreen(
                         photo = photo
                     )
                 }
+
+                AnimatedVisibility(
+                    areButtonsVisible,
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    PhotoNavigationIcon(
+                        left = true,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
+                AnimatedVisibility(
+                    areButtonsVisible,
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    PhotoNavigationIcon(
+                        left = false,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
             }
 
         }
@@ -123,7 +147,7 @@ fun PhotoScreen(
 @Composable
 fun PhotoView(
     modifier: Modifier = Modifier,
-    photo: DescribedPhoto
+    photo: Photo
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -211,12 +235,27 @@ fun PhotoDescriptionIcon(
 }
 
 @Composable
-fun PhotoDescription(modifier: Modifier, photo: DescribedPhoto) {
-    RoundedTopCornersColumn(modifier, maxHeight = 650.dp) {
+fun PhotoDescription(modifier: Modifier, photo: Photo) {
+    RoundedTopCornersColumn(maxHeight = 650.dp) {
         Text(photo.desc)
     }
 }
 
+@Composable
+fun PhotoNavigationIcon(modifier: Modifier = Modifier, left: Boolean) {
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(R.drawable.next_photo_icon)
+            .build(),
+        contentDescription = "navigation-${if (left) "left" else "right"}-button",
+        modifier = modifier
+            .size(28.dp)
+            .aspectRatio(1f)
+            .rotate(
+                if (left) 180f else 0f
+            )
+    )
+}
 
 @Composable
 fun PhotoErrorScreen(errorText: String) {
