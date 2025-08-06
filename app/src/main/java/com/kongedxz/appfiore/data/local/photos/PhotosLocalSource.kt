@@ -7,13 +7,17 @@ interface PhotosLocalSource {
     val context: Context
 
     /**
-     * Might throw an exception when trying to get photos from a category that doesn't exist
+     * @throws java.io.IOException
      */
-    suspend fun getAllPhotos(category: String): List<PhotoData>
+    suspend fun getAllPhotos(): List<PhotoData>
 
     /**
      * Might throw an exception when trying to get a description for a photo that doesn't exist
      */
     suspend fun getPhotoDescription(photoData: PhotoData): String
 
+    /**
+     * Might throw an exception when trying to get categories for a photo that doesn't exist
+     */
+    suspend fun getCategories(photoData: PhotoData): List<String>
 }
