@@ -38,24 +38,11 @@ import com.kongedxz.appfiore.presentation.utils.ActivityTitleSection
 
 private const val activityTitle = "Galería"
 
-private object GalleryTitles {
-    const val GALLERY1 = "Favoritas <3"
-    const val GALLERY2 = "Citas <3"
-    const val GALLERY3 = "Viajes"
-    const val GALLERY4 = "De chicos :'c"
-}
-
-private val galleries = listOf(
-    GalleryTitles.GALLERY1,
-    GalleryTitles.GALLERY2,
-    GalleryTitles.GALLERY3,
-    GalleryTitles.GALLERY4
-)
-private val galleriesMap = mapOf(
-    GalleryTitles.GALLERY1 to "favoritas",
-    GalleryTitles.GALLERY2 to "citas",
-    GalleryTitles.GALLERY3 to "viajes",
-    GalleryTitles.GALLERY4 to "nostalgia"
+private val galleryTitles = listOf(
+    "Favoritas <3",
+    "Citas <3",
+    "Viajes",
+    "De chicos :c"
 )
 
 private var imagesDoneLoadingInitialValue = false
@@ -66,7 +53,6 @@ fun GalleryMenuScreen(
     modifier: Modifier = Modifier,
     onGalleryButtonClick: (Gallery) -> Unit
 ) {
-
     var imagesLoaded by remember { mutableIntStateOf(0) }
     var imagesDoneLoading by remember { mutableStateOf(imagesDoneLoadingInitialValue) }
 
@@ -85,15 +71,13 @@ fun GalleryMenuScreen(
             contentPadding = PaddingValues(4.dp),
             modifier = Modifier
         ) {
-            items(galleries.size) { index ->
+            items(galleryTitles.size) { index ->
                 Column (
                     modifier = Modifier
                         .clickable {
                             onGalleryButtonClick(
                                 Gallery(
-                                    galleriesMap[
-                                            galleries[index]
-                                    ]!!
+                                galleryTitles[index]
                                 )
                             )
                         }
@@ -117,7 +101,7 @@ fun GalleryMenuScreen(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = galleries[index],
+                        text = galleryTitles[index],
                         modifier = Modifier
                     )
                 }
