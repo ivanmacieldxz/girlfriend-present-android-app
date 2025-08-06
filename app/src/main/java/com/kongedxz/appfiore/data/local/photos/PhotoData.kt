@@ -1,16 +1,16 @@
 package com.kongedxz.appfiore.data.local.photos
 
-import com.kongedxz.appfiore.domain.entity.DescribedPhoto
+import com.kongedxz.appfiore.domain.entity.Photo
 
 data class PhotoData (
     val name: String,
     val assetsUri: String,
-    val category: String
 ) {
-    fun toDescribedPhoto(desc: String): DescribedPhoto {
-        return DescribedPhoto (
+    fun toDomainPhoto(desc: String, category: List<String>): Photo {
+        return Photo(
             photoData = this,
-            desc = desc
+            desc = desc,
+            category = category
         )
     }
 }
